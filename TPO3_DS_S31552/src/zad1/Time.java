@@ -9,7 +9,6 @@ package zad1;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 
 public class Time {
@@ -153,13 +152,12 @@ public class Time {
             result.append("\n - kalendarzowo: ");
             if (years > 0) result.append(years)
                     .append(" ")
-                    .append(PolishLanguage.getYearDeclension(years))
-                    .append(" ");
-            if (months > 0) result.append(months)
+                    .append(PolishLanguage.getYearDeclension(years));
+            if (months > 0) result.append(years > 0 ? " " : "").append(months)
                     .append(" ")
                     .append(PolishLanguage.getMonthDeclension(months))
                     .append(" ");
-            if (daysCalendar > 0) result.append(daysCalendar)
+            if (daysCalendar > 0) result.append(years > 0 || months > 0 ? " " : "").append(daysCalendar)
                     .append(" ")
                     .append(PolishLanguage.getDayDeclension(daysCalendar));
         }
@@ -176,10 +174,11 @@ public class Time {
     }
 
     public static DateTimeFormatter classify(String date) {
-        try {
+        if (date.contains("T")) {
             LocalDateTime.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm"));
             return DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
-        } catch (DateTimeParseException e1) {
+        }
+        else {
             LocalDate.parse(date, DateTimeFormatter.ISO_LOCAL_DATE);
             return DateTimeFormatter.ISO_LOCAL_DATE;
         }
